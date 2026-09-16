@@ -1,0 +1,29 @@
+body { font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; background:#1e1e2e; color:#eee; margin:0; padding:20px; }
+h1 { font-size:20px; margin:0 0 4px; }
+.sub { color:#aaa; font-size:13px; margin-bottom:16px; }
+h2 { font-size:15px; border-left:4px solid #f38ba8; padding-left:8px; margin:16px 0 10px; }
+.card { background:#2a2a3c; border-radius:10px; padding:14px; margin-bottom:14px; }
+button { background:#f38ba8; color:#1e1e2e; border:none; border-radius:6px; padding:8px 14px; font-size:14px; font-weight:bold; cursor:pointer; margin-right:6px; }
+button:hover { opacity:.85; }
+button.secondary { background:#585b70; color:#eee; }
+button.small { padding:4px 8px; font-size:12px; }
+button.confirmed { background:#2ecc71; color:#fff; border:2px solid #a3e635; }
+button.unconfirmed { background:#585b70; color:#eee; }
+button:disabled { opacity:.4; cursor:not-allowed; }
+.video-wrap { display:flex; gap:12px; flex-wrap:wrap; }
+.video-box { flex:1; min-width:280px; }
+video { width:100%; background:#000; border-radius:8px; }
+.sync-controls { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.offset-badge { background:#313244; border-radius:6px; padding:4px 8px; font-size:12px; color:#a6e3a1; font-weight:bold; }
+.offset-off { color:#888; }
+.note { background:#45475a; border-radius:8px; padding:8px 10px; font-size:12px; color:#cdd6f4; margin-top:10px; line-height:1.6; }
+.warn { color:#f9e2af; }
+.opt-row { display:flex; gap:16px; flex-wrap:wrap; align-items:center; margin-top:12px; font-size:14px; }
+.opt-row input[type=number] { width:70px; background:#11111b; color:#eee; border:1px solid #585b70; border-radius:4px; padding:3px 6px; }
+.opt-inline { font-size:13px; color:#cdd6f4; margin-left:6px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th, td { padding:6px 8px; border-bottom:1px solid #45475a; text-align:left; }
+th { color:#aaa; font-weight:normal; }
+tr.rowA { outline:2px solid #f38ba8; }
+tr.rowB { outline:2px solid #89b4fa; }
+@media (max-width:720px) { body { padding:12px; } .video-wrap { flex-direction:column; } .opt-row { flex-direction:column; align-items:flex-start; gap:8px; } }

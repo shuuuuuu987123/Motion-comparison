@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>格ゲー技比較ツール（Java + Spring Boot版）</title>
+<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>格ゲー技比較ツール（Java + Spring Boot版）</h1>
+<div class="sub">録画した動画を<b>サーバー（Java）+ データベース（H2）</b>に保存し、2本をフレーム単位で同期比較します。MySQL不要・起動するだけで動きます。</div>
+
+<div class="card">
+  <h2>1. 動画をアップロード</h2>
+  <form th:action="@{/videos}" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept="video/*" required>
+    <button type="submit">アップロード</button>
+  </form>
+  <div class="note">WebM（このアプリで録画した形式）やMP4を登録できます。ここで保存した動画はサーバー側に置かれるので、<b>ページを開き直しても消えません</b>（HTML版との大きな違い）。</div>
+</div>
+
+<div class="card">
+  <h2>2. 動画リスト（比較する2本を選ぶ）</h2>
+  <form th:action="@{/}" method="get" style="margin-bottom:10px;">
+    <input type="text" name="q" th:value="${q}" placeholder="動画名で検索" style="background:#11111b;color:#eee;border:1px solid #585b70;border-radius:4px;padding:6px 10px;">
+    <button type="submit" class="small">🔍 検索</button>
+    <a th:href="@{/}" style="color:#89b4fa;font-size:13px;margin-left:6px;">クリア</a>
+  </form>
+  <table>
+    <thead><tr><th>名前</th><th>サイズ</th><th>登録日時</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr th:each="v : ${videos}" th:attr="data-id=${v.id},data-name=${v.name}">
+        <td th:text="${v.name}">動画名</td>
+        <td th:text="${v.sizeText}">0.0 MB</td>
+        <td th:text="${v.createdAtText}">2026/09/16</td>
+        <td>
+          <button type="button" class="small" data-act="selA" th:attr="data-id=${v.id}">Aにする</button>
+          <button type="button" class="small secondary" data-act="selB" th:attr="data-id=${v.id}">Bにする</button>
+          <a th:href="|/videos/${v.id}/stream|" download><button type="button" class="small secondary">⬇</button></a>
+          <form th:action="|/videos/${v.id}/delete|" method="post" style="display:inline;" onsubmit="return confirm('この動画を削除しますか？');">
+            <button type="submit" class="small secondary">🗑</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(videos)}"><td colspan="4" style="color:#888;">（動画がありません。上のフォームからアップロード、または検索条件をクリアしてください）</td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:12px;">
+    <span id="selInfo" style="font-size:13px;color:#cdd6f4;">A: 未選択 / B: 未選択</span>
+    <button type="button" id="btnCompare" disabled>▶ 比較ページを開く</button>
+  </div>
+</div>
+
+<div class="note">
+  <b>録画の方法</b>：別タブでHTML版（kakuge_tech_hikaku_v4.html）を開いて録画 → 「⬇ ダウンロード」→ このページでアップロード、が今の段階では簡単です。
+  このJava版でも録画機能はブラウザの仕組みで追加できます（次の拡張ステップ）。
+</div>
+
+<script>
+const sel = { A: null, B: null };
+function nameOf(id) {
+  const tr = document.querySelector('tr[data-id="' + id + '"]');
+  return tr ? tr.getAttribute('data-name') : null;
+}
+function refresh() {
+  document.querySelectorAll('tr[data-id]').forEach(tr => {
+    const id = Number(tr.getAttribute('data-id'));
+    tr.classList.toggle('rowA', sel.A === id);
+    tr.classList.toggle('rowB', sel.B === id);
+  });
+  document.getElementById('selInfo').textContent =
+    'A: ' + (sel.A ? (nameOf(sel.A) || '(検索で非表示中)') : '未選択') + ' / B: ' + (sel.B ? (nameOf(sel.B) || '(検索で非表示中)') : '未選択');
+  document.getElementById('btnCompare').disabled = !(sel.A && sel.B);
+}
+document.querySelectorAll('[data-act="selA"]').forEach(b =>
+  b.addEventListener('click', () => { sel.A = Number(b.getAttribute('data-id')); refresh(); }));
+document.querySelectorAll('[data-act="selB"]').forEach(b =>
+  b.addEventListener('click', () => { sel.B = Number(b.getAttribute('data-id')); refresh(); }));
+document.getElementById('btnCompare').addEventListener('click', () => {
+  if (sel.A === sel.B) { alert('AとBに同じ動画は選べません'); return; }
+  location.href = '/compare?a=' + sel.A + '&b=' + sel.B;
+});
+</script>
+</body>
+</html>

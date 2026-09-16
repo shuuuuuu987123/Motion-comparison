@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>フレーム比較（Java版）</title>
+<link rel="stylesheet" th:href="@{/css/style.css}">
+<script defer th:src="@{/js/compare.js}"></script>
+</head>
+<body>
+<h1>フレーム比較</h1>
+<a th:href="@{/}" style="color:#89b4fa;font-size:13px;">← 動画リストへ戻る</a>
+
+<div class="card">
+  <h2>同時比較（同期点・コマ送り・ループ）</h2>
+  <div class="video-wrap">
+    <div class="video-box">
+      <div style="margin-bottom:4px;">動画A（技A）： <span th:text="${a.name}">A</span></div>
+      <video id="videoA" th:attr="data-vid=${a.id}" th:src="|/videos/${a.id}/stream|" controls></video>
+      <div class="sync-controls">
+        <button id="btnA3Back" class="secondary small">−3f</button>
+        <button id="btnABack" class="secondary small">−1f</button>
+        <button id="btnAFwd" class="small">＋1f</button>
+        <button id="btnA3Fwd" class="small">＋3f</button>
+        <button id="btnAConfirm" class="unconfirmed">押して確定</button>
+        <button id="btnAClear" class="secondary small">解除</button>
+        <span id="offA" class="offset-badge offset-off">同期点 未設定</span>
+      </div>
+    </div>
+    <div class="video-box">
+      <div style="margin-bottom:4px;">動画B（技B）： <span th:text="${b.name}">B</span></div>
+      <video id="videoB" th:attr="data-vid=${b.id}" th:src="|/videos/${b.id}/stream|" controls></video>
+      <div class="sync-controls">
+        <button id="btnB3Back" class="secondary small">−3f</button>
+        <button id="btnBBack" class="secondary small">−1f</button>
+        <button id="btnBFwd" class="small">＋1f</button>
+        <button id="btnB3Fwd" class="small">＋3f</button>
+        <button id="btnBConfirm" class="unconfirmed">押して確定</button>
+        <button id="btnBClear" class="secondary small">解除</button>
+        <span id="offB" class="offset-badge offset-off">同期点 未設定</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:12px;">
+    <button id="btnPlay">▶ 同時再生</button>
+    <button id="btnRestart" class="secondary">⏮ 最初から再生</button>
+    <button id="btnAutoStep">⏯ 自動コマ送り</button>
+    <label class="opt-inline">1コマ進む間隔(秒): <input type="number" id="autoSec" min="0.05" max="10" step="0.05" value="0.5" style="width:70px;"></label>
+    <button id="btnPause" class="secondary">⏸ 一時停止</button>
+    <span id="frameInfo" style="margin-left:10px;font-size:13px;color:#a6e3a1;"></span>
+  </div>
+
+  <div class="opt-row">
+    <label><input type="checkbox" id="loopOn"> ループ再生する</label>
+    <label>ループ区間(秒): <input type="number" id="loopSec" min="1" max="120" step="0.5" value="5"></label>
+    <label>FPS(1コマの長さ): <input type="number" id="fps" min="1" max="240" value="60" style="width:60px;"></label>
+  </div>
+
+  <div class="note">
+    <b>使い方</b>：①各動画の<b>シークバーで止めた位置</b>が同期点の候補（未確定）になります → ②「−3f／−1f／＋1f／＋3f」で微調整 → ③「<b>押して確定</b>」で緑色「確定済み ✓」 → ④「▶ 同時再生」。
+    再生ボタンは両方確定しないと動きません。ズレに気づいたら「⏸ 一時停止」→微調整→再確定。
+    確定した同期点は<b>ブラウザに保存</b>されるので、次に開いたときも再現されます（動画ごとに記憶）。
+  </div>
+</div>
+</body>
+</html>
